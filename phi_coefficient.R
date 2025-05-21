@@ -1,8 +1,31 @@
+# ------------------------------------------------------------------------------
+# Script: phi_coefficient.R
+# Purpose: Calculate pairwise phi coefficients (association between binary disease
+#          categories) for a given dataset (e.g., UKB or FinnGen, male or female).
+#
+# Instructions:
+#   - Edit the input and output file names below as needed.
+#   - The input file should contain binary columns for each disease category.
+#   - The script outputs:
+#       1. A table of all pairwise phi coefficients and their p-values.
+#       2. A phi correlation matrix and a corresponding correlation plot.
+#
+# Output:
+#   - A tab-separated file with pairwise phi coefficients and counts.
+#   - A tab-separated file with the phi correlation matrix.
+#   - A correlation plot visualizing the matrix.
+# ------------------------------------------------------------------------------
+
 library(psych)
 library(corrplot)
 
 # Pairwise phi ----------------------------------------------------------------
-data_table <- read.delim('female_common_pathways_finngen.txt')
+#Edit here the name of the common pathways file
+input_filename = "female_common_pathways_ukb.txt"
+output_filename_whole = "female_phi_coefficient_ukb.txt"
+output_filename_matrix = "female_phi_matrix_ukb.txt"
+
+data_table <- read.delim(input_filename)
 
 # Extract category (binary values) columns
 category_data <- data_table[, c("cancer", "chf", "copd", "diabetes", "dementia", "mi", "stroke")]
@@ -49,11 +72,11 @@ for (i in 1:(ncol(category_data)-1)) {
   }
 }
 
-write.table(results, "male_phi_coefficient.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+write.table(results, output_filename_whole, sep = "\t", quote = FALSE, row.names = FALSE)
 
 # Corrplot --------------------------------------------------------------
 
-data_table <- read.delim('female_common_pathways_finngen.txt')
+data_table <- read.delim(input_filename)
 
 disease_data <- data_table[, c("cancer", "chf", "copd", "diabetes", "dementia", "mi", "stroke")] #only binary values
 
@@ -64,4 +87,4 @@ phi_matrix <- cor(disease_data, method = "pearson")
 
 corrplot(phi_matrix, method = "color", addCoef.col = "black", type = "lower", tl.cex = 1)
 
-write.table(phi_matrix, "male_phi_matrix_finngen.txt", sep = "\t", row.names = FALSE, quote = FALSE)
+write.table(phi_matrix, output_filename_matrix, sep = "\t", row.names = FALSE, quote = FALSE)
