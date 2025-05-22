@@ -2,6 +2,7 @@
 # Script: phi_comparison_table_script.R
 # Purpose: Compare phi coefficients between two datasets (e.g., FinnGen and UKB / male and female)
 #          Setting non-significant values to NA.
+#          Same script can be used to combine tables also between all data by changing the "P_value" to Phi
 #
 # Instructions:
 #   - Set the significance level and output file name below.
