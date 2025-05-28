@@ -15,6 +15,9 @@ find_pathways_for_categories(filtered_genes, pathway_data)
     Returns a dictionary mapping each category to a dictionary of genes and their associated pathways,
     and a dictionary mapping pathway names to their total gene counts.
 
+write_into_file(pathways_categorized, filename)
+    Writes the dictionary including each pathway that was linked to a gene into a text file.
+
 find_common_pathways_for_pairs(categorized_pathways, pairs)
     Identifies pathways that are common between pairs of disease categories.
     Returns a dictionary mapping each pathway to the categories and genes involved.
@@ -40,11 +43,12 @@ import os
 categories = ["cancer", "chf", "copd", "diabetes", "dementia", "mi", "stroke"]
 
 # Input file names, CHANGE HERE
-# Male first, Female second
+# Male data first, Female data second
 pathway_data_file = 'msigdb.v2024.1.Hs.symbols.gmt'
 #pathway_data_file = 'c8.all.v2024.1.Hs.symbols.gmt' #Partial data
-output_file_names = ['male_common_pathways_finngen_small.txt', 'female_common_pathways_finngen_small.txt']
-input_file_names = ["male_tte_gwas_pval_genes.tsv_source.txt", "female_tte_gwas_pval_genes.tsv_source.txt"]
+input_file_names = ["male_gwas_ukb.txt", "female_gwas_ukb.txt"]
+pathways_to_genes_file_names = ["male_pathways_to_genes_ukb.txt", "female_pathways_to_genes_ukb.txt"]
+output_file_names = ['male_common_pathways_ukb.txt', 'female_common_pathways_ukb.txt']
 
 # Other global variables
 total_genes_for_pathway = set()
@@ -96,6 +100,16 @@ def find_pathways_for_categories(filtered_genes, pathway_data):
 
     # Returns {category: {gene:[pathways]}}
     return pathways_categorized
+
+def write_into_file(pathways_categorized, filename):
+    with open(filename, 'w') as f:
+        for category, genes in pathways_categorized.items():
+            f.write(f"Category: {category}\n")
+            for gene, pathways in genes.items():
+                f.write(f"  Gene: {gene}\n")
+                for pathway in pathways:
+                    f.write(f"    - Pathway: {pathway}\n")
+            f.write("\n")
 
 def find_common_pathways_for_pairs(categorized_pathways, pairs):
     global_common_pathways = defaultdict(lambda: defaultdict(list))
@@ -200,6 +214,8 @@ category_genes_female = filter_genes_by_category(input_file_names[1])
 # Returns {category: {gene:[pathways]}}
 pathways_categorized_male = find_pathways_for_categories(category_genes_male, pathway_data_file)
 pathways_categorized_female = find_pathways_for_categories(category_genes_female, pathway_data_file)
+write_into_file(pathways_categorized_male, pathways_to_genes_file_names[0])
+write_into_file(pathways_categorized_female, pathways_to_genes_file_names[1])
 
 # Find all possible pairs from categories
 # Returns [pairs]
