@@ -20,7 +20,7 @@ R version 4.5.0.
 **Outputs**
 
 - Pathway-category association files divided by sex
-
+- (Secondary output : pathways mapped to genes by trait)
 
 
 ### [`phi_coefficient_script.R`](phi_coefficient_script.R)
